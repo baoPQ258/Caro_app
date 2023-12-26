@@ -1,0 +1,55 @@
+function minimax(newBoard, player) {
+  var availSpot = emptySquares(newBoard);
+
+  if (checkWin(newBoard, player)) {
+    console.log(`Player ${player} wins!`);
+    return { score: 10 };
+  } else if (checkWin(newBoard, aiPlayer)) {
+    console.log(`Player ${aiPlayer} wins!`);
+    return { score: -10 };
+  } else if (availSpot.length === 0) {
+    console.log("It's a tie!");
+    return { score: 0 };
+  }
+
+  var moves = [];
+
+  for (let i = 0; i < availSpot.length; i++) {
+    var move = {};
+    move.index = newBoard[availSpot[i]];
+    newBoard[availSpot[i]] = player;
+
+    if (player === aiPlayer) {
+      var result = minimax(newBoard, huPlayer);
+      move.score = result.score;
+    } else {
+      var result = minimax(newBoard, aiPlayer);
+      move.score = result.score;
+    }
+
+    newBoard[availSpot[i]] = move.index;
+    moves.push(move);
+  }
+
+  var bestMove;
+  if (player === aiPlayer) {
+    var bestScore = -Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  } else {
+    var bestScore = Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  }
+
+  console.log(`Player ${player} chooses move ${availSpot[bestMove]} with score ${bestScore}`);
+  return moves[bestMove];
+}

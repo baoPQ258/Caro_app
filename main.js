@@ -87,30 +87,26 @@ function checkTie() {
 }
 
 function minimax(newBoard, player, alpha = -Infinity, beta = Infinity) {
-  // Lấy danh sách các ô trống trên bảng
   var availSpot = emptySquares(newBoard);
 
-  // Kiểm tra chiến thắng, thua, hoặc hòa và trả về điểm số tương ứng
   if (checkWin(newBoard, player)) {
-    return { score: 10 }; 
+    console.log(`Player ${player} wins!`);
+    return { score: 10 };
   } else if (checkWin(newBoard, aiPlayer)) {
+    console.log(`Player ${aiPlayer} wins!`);
     return { score: -10 };
   } else if (availSpot.length === 0) {
+    console.log("It's a tie!");
     return { score: 0 };
   }
 
-  // Mảng chứa thông tin về các nước đi và điểm số tương ứng
   var moves = [];
-  // Duyệt qua tất cả các ô trống
+
   for (let i = 0; i < availSpot.length; i++) {
-    // Lưu trạng thái hiện tại của ô trống
     var move = {};
     move.index = newBoard[availSpot[i]];
-
-    // Đánh dấu ô trống với người chơi hiện tại
     newBoard[availSpot[i]] = player;
 
-    // Gọi đệ quy minimax cho người chơi đối phương và cập nhật Alpha hoặc Beta
     if (player === aiPlayer) {
       var result = minimax(newBoard, huPlayer, alpha, beta);
       move.score = result.score;
@@ -121,18 +117,15 @@ function minimax(newBoard, player, alpha = -Infinity, beta = Infinity) {
       beta = Math.min(beta, move.score);
     }
 
-    // Đặt lại trạng thái của ô trống
     newBoard[availSpot[i]] = move.index;
-
-    // Thêm thông tin về nước đi và điểm số vào mảng moves
     moves.push(move);
-    // Alpha-Beta Pruning: Nếu Beta nhỏ hơn hoặc bằng Alpha, thoát khỏi vòng lặp
+
     if (beta <= alpha) {
-      break
-    };
+      console.log(`Pruning at ${player} - alpha: ${alpha}, beta: ${beta}`);
+      break;
+    }
   }
 
-  // Tìm nước đi tốt nhất từ mảng moves
   var bestMove;
   if (player === aiPlayer) {
     var bestScore = -Infinity;
@@ -152,6 +145,10 @@ function minimax(newBoard, player, alpha = -Infinity, beta = Infinity) {
     }
   }
 
-  // Trả về thông tin về nước đi tốt nhất
+  console.log(`Player ${player} chooses move ${availSpot[bestMove]} with score ${bestScore}`);
   return moves[bestMove];
 }
+
+
+
+
